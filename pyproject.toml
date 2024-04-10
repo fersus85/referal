@@ -12,6 +12,10 @@ sqlalchemy = "^2.0.29"
 alembic = "^1.13.1"
 python-multipart = "^0.0.9"
 python-dotenv = "^1.0.1"
+uvicorn = "^0.29.0"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+pydantic-settings = "^2.2.1"
 
 
 [build-system]
