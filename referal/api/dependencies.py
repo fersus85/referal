@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 
-from ..schemas import UserInDB, User, TokenData
+from referal.postgres_db.schemas import UserInDB, User, TokenData
 from ..core.db import fake_users_db
 from referal.core import security
 from referal.core.config import settings

@@ -1,5 +1,5 @@
 from referal.api.dependencies import get_user
-from referal.schemas import User
+from .schemas import User
 from referal.core import security
 
 

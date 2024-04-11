@@ -4,7 +4,7 @@ from fastapi import Depends, FastAPI
 
 from .dependencies import get_current_active_user
 from .routers import items, login
-from ..schemas import User
+from referal.postgres_db.schemas import User
 
 
 app = FastAPI()

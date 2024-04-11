@@ -1,15 +1,23 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
 class User(BaseModel):
     username: str
-    email: str | None = None
+    email: str
     full_name: str | None = None
     disabled: bool | None = None
 
 
-class UserInDB(User):
-    hashed_password: str
+class UserCreate(User):
+    password: str
+
+
+class UserRegister(BaseModel):
+    email: str
+    password: str
+    full_name: str | None = None
 
 
 class Token(BaseModel):
@@ -19,3 +27,9 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: str | None = None
+
+
+class ReferalCode(BaseModel):
+    code: str
+    expire: datetime
+    active: bool

@@ -4,10 +4,10 @@ from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from referal.crud import authenticate_user
+from referal.postgres_db.crud import authenticate_user
 from referal.core import config, db
 from referal.core.security import create_access_token
-from referal.schemas import Token
+from referal.postgres_db.schemas import Token
 
 
 router = APIRouter(
