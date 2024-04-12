@@ -4,14 +4,24 @@ from pydantic import BaseModel
 
 
 class User(BaseModel):
-    username: str
     email: str
     full_name: str | None = None
-    disabled: bool | None = None
+
+    class Config:
+        from_attributes = True
 
 
 class UserCreate(User):
     password: str
+
+
+class UserRead(User):
+    referal_code: str
+
+
+class UsersRead(BaseModel):
+    data: list[UserRead]
+    count: int
 
 
 class UserRegister(BaseModel):

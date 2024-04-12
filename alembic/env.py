@@ -6,10 +6,10 @@ from sqlalchemy import pool
 from alembic import context
 
 from referal.core.config import settings
-from referal.core.db import Base
+from referal.postgres_db.models import Base
 
 
-sql_alch_url = settings.SQLALCHEMY_DATABASE_URI
+sql_alch_url = str(settings.SQLALCHEMY_DATABASE_URI)
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
