@@ -1,4 +1,4 @@
-from sqlalchemy import select, insert
+from sqlalchemy import select, insert, update
 from sqlalchemy.orm import Session
 
 from referal.postgres_db.models import UserReferer
@@ -8,8 +8,10 @@ from referal.core import security as sec
 
 def get_user_by_email(db: Session, email: str) -> UserReferer | None:
     statement = select(UserReferer).where(UserReferer.email == email)
-    user = db.execute(statement)
-    return user.first()[0]
+    user = db.execute(statement).first()
+    if user:
+        return user[0]
+    return None
 
 
 def authenticate_user(db: Session,
@@ -31,7 +33,7 @@ def create_user(db: Session, user_create: UserCreate) -> UserReferer:
                 'full_name': user_create.full_name,
                 'email': user_create.email,
                 'hashed_password': sec.get_password_hash(user_create.password),
-                'referal_code': 'code',
+                'referal_code': None,
                 'referals': []
             }
         ],
@@ -40,3 +42,16 @@ def create_user(db: Session, user_create: UserCreate) -> UserReferer:
     db.commit()
     db.refresh(user)
     return user
+
+
+def update_user_referer_code(db: Session,
+                             user: UserReferer,
+                             values: str | None) -> None:
+    stmt = (
+        update(UserReferer)
+        .where(UserReferer.email == user.email)
+        .values(referal_code=values)
+    )
+    db.execute(stmt)
+    db.commit()
+    return

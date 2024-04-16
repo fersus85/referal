@@ -13,11 +13,20 @@ ALGORITHM = "HS256"
 
 def create_access_token(subject: dict, expires_delta: timedelta) -> str:
     expire = datetime.now(timezone.utc) + expires_delta
-    to_encode = {"exp": expire, "sub": subject.get('sub')}
+    to_encode = {'exp': expire, 'sub': subject.get('sub')}
     encoded_jwt = jwt.encode(to_encode,
                              settings.SECRET_KEY,
                              algorithm=ALGORITHM)
     return encoded_jwt
+
+
+def create_referal_code(owner: str) -> str:
+    expire = datetime.now(timezone.utc) + timedelta(minutes=5)
+    to_encode = {'exp': expire, 'sub': owner}
+    jwt_code = jwt.encode(to_encode,
+                          settings.SECRET_KEY,
+                          algorithm=ALGORITHM)
+    return jwt_code
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:

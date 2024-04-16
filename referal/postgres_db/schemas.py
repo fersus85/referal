@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from pydantic import BaseModel
 
 
@@ -16,7 +14,7 @@ class UserCreate(User):
 
 
 class UserRead(User):
-    referal_code: str
+    referal_code: str | None
 
 
 class UsersRead(BaseModel):
@@ -37,9 +35,3 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: str | None = None
-
-
-class ReferalCode(BaseModel):
-    code: str
-    expire: datetime
-    active: bool
