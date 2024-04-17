@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from sqlalchemy import select, insert, update
 from sqlalchemy.orm import Session
 
@@ -81,3 +83,12 @@ def create_referal(db: Session, referer_email: str, referal_email: str):
 def get_all_referals(db: Session):
     referals = db.execute(select(UserReferal)).all()
     return referals
+
+
+def get_refs_by_id(db: Session, id: UUID):
+    stmt = select(UserReferer).where(UserReferer.id == id)
+    result = db.execute(stmt).first()
+    if result:
+        referals = result[0].referals
+        return referals
+    return []

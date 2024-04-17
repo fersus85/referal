@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 
 class User(BaseModel):
+    id: UUID
     email: str
     full_name: str | None = None
 
@@ -24,12 +25,6 @@ class UsersRead(BaseModel):
     count: int
 
 
-class UserRegister(BaseModel):
-    email: str
-    password: str
-    full_name: str | None = None
-
-
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -39,7 +34,15 @@ class TokenData(BaseModel):
     username: str | None = None
 
 
-class ReferalRead(BaseModel):
+class ReferalBase(BaseModel):
+    email: str
+
+
+class ReferalCreate(ReferalBase):
+    code: str
+
+
+class ReferalRead(ReferalBase):
     id: UUID
     referer_id: UUID
     email: str
