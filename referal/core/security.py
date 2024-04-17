@@ -21,7 +21,8 @@ def create_access_token(subject: dict, expires_delta: timedelta) -> str:
 
 
 def create_referal_code(owner: str) -> str:
-    expire = datetime.now(timezone.utc) + timedelta(minutes=5)
+    delta = settings.REFERAL_CODE_EXPIRE_MINUTES
+    expire = datetime.now(timezone.utc) + timedelta(minutes=delta)
     to_encode = {'exp': expire, 'sub': owner}
     jwt_code = jwt.encode(to_encode,
                           settings.SECRET_KEY,

@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from pydantic import BaseModel
 
 
@@ -35,3 +37,17 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: str | None = None
+
+
+class ReferalRead(BaseModel):
+    id: UUID
+    referer_id: UUID
+    email: str
+    referer: User
+
+    class Config:
+        from_attributes = True
+
+
+class ReferalsRead(BaseModel):
+    referals: list[ReferalRead]

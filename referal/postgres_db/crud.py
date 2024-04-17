@@ -1,7 +1,7 @@
 from sqlalchemy import select, insert, update
 from sqlalchemy.orm import Session
 
-from referal.postgres_db.models import UserReferer
+from referal.postgres_db.models import UserReferer, UserReferal
 from referal.postgres_db.schemas import UserCreate
 from referal.core import security as sec
 
@@ -55,3 +55,29 @@ def update_user_referer_code(db: Session,
     db.execute(stmt)
     db.commit()
     return
+
+
+def create_referal(db: Session, referer_email: str, referal_email: str):
+    referer: UserReferer = get_user_by_email(db, referer_email)
+    referal = db.scalars(
+        insert(UserReferal).returning(UserReferal),
+        [
+            {
+                'referer_id': referer.id,
+                'email': referal_email,
+                'hashed_password': 'psw',
+                'referer': referer,
+            }
+        ],
+    ).first()
+    referer.referals.extend([referal])
+    db.add(referal)
+    db.commit()
+    db.refresh(referal)
+    db.refresh(referer)
+    return referal
+
+
+def get_all_referals(db: Session):
+    referals = db.execute(select(UserReferal)).all()
+    return referals
