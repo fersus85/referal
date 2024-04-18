@@ -4,7 +4,6 @@ from pydantic import BaseModel
 
 
 class User(BaseModel):
-    id: UUID
     email: str
     full_name: str | None = None
 
@@ -17,6 +16,7 @@ class UserCreate(User):
 
 
 class UserRead(User):
+    id: UUID
     referal_code: str | None
 
 

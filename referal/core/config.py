@@ -15,7 +15,8 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24
     REFERAL_CODE_EXPIRE_MINUTES: int = 30
-    PROJECT_NAME: str
+
+    PROJECT_NAME: str = 'ReferalApi'
     POSTGRES_SERVER: str
     POSTGRES_PORT: int = 5432
     POSTGRES_USER: str
@@ -33,6 +34,13 @@ class Settings(BaseSettings):
             port=self.POSTGRES_PORT,
             path=self.POSTGRES_DB,
         )
+
+    SMTP_SSL: bool = True
+    SMTP_PORT: int
+    SMTP_HOST: str
+    SMTP_USER: str
+    SMTP_PASSWORD: str
+    EMAILS_FROM_EMAIL: str
 
 
 settings = Settings()

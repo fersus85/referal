@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+ 
+<head>
+    <style>
+        body {
+            background-color: grey;
+        }
+ 
+        .container {
+            text-shadow: 10px 10px 10px #000000;
+            background: linear-gradient(to right, #00000088, #ffffff1d);
+            color: rgb(198, 198, 198);
+            padding-bottom: 10px;
+            padding-left: 5px;
+        }
+    </style>
+</head>
+ 
+<body>
+    <div class="container">
+        <header>
+            <h1>{{ subject }}</h1>
+        </header>
+ 
+        <main>
+            <p>{{ greeting }}</p>
+            <p>{{ message }}</p>
+            <p>Best regards, <br>{{ project_name }}</p>
+        </main>
+ 
+        <footer>
+            This email was sent from <i>{{ project_name }}</i>.
+        </footer>
+    </div>
+</body>
+ 
+</html>

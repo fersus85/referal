@@ -61,23 +61,26 @@ def update_user_referer_code(db: Session,
 
 def create_referal(db: Session, referer_email: str, referal_email: str):
     referer: UserReferer = get_user_by_email(db, referer_email)
-    referal = db.scalars(
-        insert(UserReferal).returning(UserReferal),
-        [
-            {
-                'referer_id': referer.id,
-                'email': referal_email,
-                'hashed_password': 'psw',
-                'referer': referer,
-            }
-        ],
-    ).first()
-    referer.referals.extend([referal])
-    db.add(referal)
-    db.commit()
-    db.refresh(referal)
-    db.refresh(referer)
-    return referal
+    try:
+        referal = db.scalars(
+            insert(UserReferal).returning(UserReferal),
+            [
+                {
+                    'referer_id': referer.id,
+                    'email': referal_email,
+                    'hashed_password': 'psw',
+                    'referer': referer,
+                }
+            ],
+        ).first()
+        referer.referals.extend([referal])
+        db.add(referal)
+        db.commit()
+        db.refresh(referal)
+        db.refresh(referer)
+        return referal
+    except Exception:
+        return 'Referal with same email already in system'
 
 
 def get_all_referals(db: Session):

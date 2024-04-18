@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, Depends
@@ -17,6 +17,7 @@ from referal.postgres_db.schemas import (
     ReferalsRead)
 from referal.postgres_db.models import UserReferer
 from referal.postgres_db import crud
+from referal.utils import generate_referal_code_email, send_email
 
 
 router = APIRouter(
@@ -56,3 +57,19 @@ def get_referals_by_id_referer(db: SessionConn, ref_id: UUID):
     if not referals:
         return 'Ivalid ID'
     return ReferalsRead(referals=referals)
+
+
+@router.get('/email/', response_model=str)
+def send_ref_code_by_email(referer: Annotated[
+                           UserReferer, Depends(get_current_user)]) -> str:
+    email_data = generate_referal_code_email(username=referer.full_name,
+                                             code=referer.referal_code)
+    try:
+        send_email(
+            email_to=referer.email,
+            subject=email_data.subject,
+            html_content=email_data.html_content,
+        )
+    except Exception as ex:
+        return ex
+    return 'Success sending'
