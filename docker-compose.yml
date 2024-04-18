@@ -1,0 +1,36 @@
+version: '3.9'
+services:
+  postgres_db:
+    image: postgres:alpine3.19
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  referal:
+    build:
+      context: .
+    env_file:
+      - .env
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL}
+      - POSTGRES_SERVER=postgres_db
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER?}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    command: ['/referal/scripts/referal.sh']
+    ports:
+      - 8888:8000
+    depends_on:
+      - postgres_db
+volumes:
+  postgres_data:
