@@ -42,5 +42,10 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: str
     EMAILS_FROM_EMAIL: str
 
+    REDIS_SERVER: str
+    REDIS_PASSWORD: str
+    REDIS_PORT: int
+    REDIS_DATABASES: int
+
 
 settings = Settings()

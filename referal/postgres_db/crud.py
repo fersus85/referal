@@ -95,3 +95,15 @@ def get_refs_by_id(db: Session, id: UUID):
         referals = result[0].referals
         return referals
     return []
+
+
+async def get_code(db: Session, email) -> str:
+    stmt = (
+        select(UserReferer.referal_code)
+        .where(UserReferer.email == email)
+    )
+    result = db.execute(stmt).first()
+    if result:
+        code = result[0]
+        return code
+    return 'Invalid email or user dont have valid code'

@@ -51,11 +51,11 @@ def read_users(db: SessionConn, skip: int = 0, limit: int = 100) -> Any:
     return UsersRead(data=users, count=count[0])
 
 
-@router.get('/getrefs/{ref_id}/', response_model=ReferalsRead | str)
+@router.get('/getrefs/{ref_id}', response_model=ReferalsRead | str)
 def get_referals_by_id_referer(db: SessionConn, ref_id: UUID):
     referals = crud.get_refs_by_id(db, ref_id)
     if not referals:
-        return 'Ivalid ID'
+        return 'Referals list empty or Invalid ID'
     return ReferalsRead(referals=referals)
 
 
