@@ -2,6 +2,7 @@ from uuid import UUID
 
 from sqlalchemy import select, insert, update
 from sqlalchemy.orm import Session
+from sqlalchemy.sql.functions import func
 
 from referal.postgres_db.models import UserReferer, UserReferal
 from referal.postgres_db.schemas import UserCreate
@@ -44,6 +45,16 @@ def create_user(db: Session, user_create: UserCreate) -> UserReferer:
     db.commit()
     db.refresh(user)
     return user
+
+
+def get_users(db: Session):
+    stmt_count = select(func.count()).select_from(UserReferer)
+    count = db.execute(stmt_count).first()
+
+    stmt_users = select(UserReferer)
+    users = [tpl[0] for tpl in db.execute(stmt_users).all()]
+
+    return count, users
 
 
 def update_user_referer_code(db: Session,

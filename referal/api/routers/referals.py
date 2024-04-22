@@ -16,7 +16,7 @@ router = APIRouter(
 
 @router.post('/', response_model=ReferalRead | str)
 def create_referal(db: SessionConn, payload: ReferalCreate):
-    '''Create referal by referer code'''
+    '''Принимает реферальный код, добавляет в базу реферала'''
     referer_email = check_ref_code(payload.code)
     if not referer_email:
         return 'Invalid referal code'
@@ -27,6 +27,7 @@ def create_referal(db: SessionConn, payload: ReferalCreate):
 
 @router.get('/all/', response_model=ReferalsRead)
 def get_all_referals(db: SessionConn):
+    '''Возвращает список всех рефералов'''
     lst = crud.get_all_referals(db)
     referals = [ref[0] for ref in lst]
     return ReferalsRead(referals=referals)

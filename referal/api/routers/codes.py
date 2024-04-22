@@ -20,7 +20,12 @@ router = APIRouter(
 
 @router.get("/")
 def create_ref_code(db: SessionConn,
-                    user: Annotated[UserReferer, Depends(get_current_user)]):
+                    user: Annotated[UserReferer,
+                                    Depends(get_current_user)]) -> str:
+    '''
+    Создаёт и возвращает реферальный код для зарегестрированного реферера
+    '''
+
     if user.referal_code:
         if check_ref_code(user.referal_code):
             return f'you already have active code: {user.referal_code}'
@@ -31,19 +36,22 @@ def create_ref_code(db: SessionConn,
 
 @router.delete('/')
 def delete_ref_code(db: SessionConn,
-                    user: Annotated[UserReferer, Depends(get_current_user)]):
+                    user: Annotated[UserReferer,
+                                    Depends(get_current_user)]) -> str:
+    '''Удаляет реферальный код реферера'''
     update_user_referer_code(db, user, None)
     return 'Your referal code has deleted'
 
 
 @router.get('/get_code')
-async def get_code_by_email(db: SessionConn, email: str):
+async def get_code_by_email(db: SessionConn, email: str) -> dict:
+    '''Принимает email, кэширует и возвращает реферальный код '''
     redis = await aioredis.from_url(
         f"redis://{settings.REDIS_SERVER}",
         )
     cache_code = await redis.get(email)
     if cache_code is not None:
-        return {'Redis_code': cache_code}
+        return {'code_from_cache': cache_code}
     code = await get_code(db, email)
     await redis.set(email, code, ex=1800)
-    return {'DB_code': code}
+    return {'code_from_db': code}

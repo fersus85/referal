@@ -2,8 +2,6 @@ from typing import Any, Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, Depends
-from sqlalchemy import select
-from sqlalchemy.sql.functions import func
 
 from referal.api.dependencies import (
     SessionConn,
@@ -28,6 +26,7 @@ router = APIRouter(
 
 @router.post('/', response_model=User)
 def create_user(db: SessionConn, user_in: UserCreate) -> Any:
+    '''Принимает email, имя и пароль. Создаёт и возвращает Реферера.'''
     user = get_user_by_email(db, user_in.email)
     if user:
         raise HTTPException(
@@ -38,21 +37,21 @@ def create_user(db: SessionConn, user_in: UserCreate) -> Any:
     return user
 
 
-@router.get(
-    "/",
-    dependencies=[Depends(get_current_user)],
-    response_model=UsersRead)
-def read_users(db: SessionConn, skip: int = 0, limit: int = 100) -> Any:
-    count = db.execute(
-        select(func.count()).select_from(UserReferer)
-    ).first()
-    statement = select(UserReferer).offset(skip).limit(limit)
-    users = [tpl[0] for tpl in db.execute(statement).all()]
+@router.get("/",
+            dependencies=[Depends(get_current_user)],
+            response_model=UsersRead)
+def get_all_users(db: SessionConn) -> Any:
+    '''Возвращает зарегестрированному рефереру список всех рефереров'''
+    count, users = crud.get_users(db)
     return UsersRead(data=users, count=count[0])
 
 
 @router.get('/getrefs/{ref_id}', response_model=ReferalsRead | str)
-def get_referals_by_id_referer(db: SessionConn, ref_id: UUID):
+def get_referals_by_id_referer(db: SessionConn,
+                               ref_id: UUID) -> ReferalsRead | str:
+    '''
+    В параметре пути принимает id реферера, возвращает список его рефералов
+    '''
     referals = crud.get_refs_by_id(db, ref_id)
     if not referals:
         return 'Referals list empty or Invalid ID'
@@ -62,6 +61,10 @@ def get_referals_by_id_referer(db: SessionConn, ref_id: UUID):
 @router.get('/email/', response_model=str)
 def send_ref_code_by_email(referer: Annotated[
                            UserReferer, Depends(get_current_user)]) -> str:
+    '''
+    Отправляет зарегестрированному рефереру email с его реферальным кодом
+    '''
+
     email_data = generate_referal_code_email(username=referer.full_name,
                                              code=referer.referal_code)
     try:
