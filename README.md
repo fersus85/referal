@@ -32,7 +32,7 @@
 
 1. Клонируйте репозиторий:
     ```bash
-    git clone git@github.com:fersus85/referal.git
+    git clone https://github.com/fersus85/referal.git
     ```
 2. Перейдите в директорию проекта:
     ```bash
